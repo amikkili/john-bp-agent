@@ -1,0 +1,11 @@
+# ── Secrets — NEVER commit these ────────────────────────────
+.env
+*.env
+
+# ── Python ───────────────────────────────────────────────────
+venv/
+__pycache__/
+*.pyc
+.DS_Store
+*.egg-info/
+

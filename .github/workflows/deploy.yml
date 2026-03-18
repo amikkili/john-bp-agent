@@ -1,0 +1,42 @@
+name: Deploy John BP Agent
+
+on:
+  push:
+    branches:
+      - main          # triggers on every push to main
+
+jobs:
+  test-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      # Step 4: Run basic import test
+      - name: Test imports
+        run: |
+          python -c "import fastapi, psycopg2, groq, twilio; print('All imports OK')"
+
+      # Step 5: Build Docker image (verify it builds)
+      - name: Build Docker image
+        run: docker build -t john-bp-agent .
+
+      # Step 6: Deploy to Render via Deploy Hook
+      - name: Deploy to Render
+        run: |
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}

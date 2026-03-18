@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: john-bp-agent
+    runtime: docker         # tells Render to use your Dockerfile
+    dockerfilePath: ./Dockerfile
+    region: oregon
+    plan: free
+    branch: main
+    healthCheckPath: /      # Render pings / to verify app is alive
+    envVars:
+      - key: DATABASE_URL
+        sync: false         # set manually in Render dashboard
+      - key: GROQ_API_KEY
+        sync: false
+      - key: TWILIO_SID
+        sync: false
+      - key: TWILIO_TOKEN
+        sync: false
+      - key: DOCTOR_WHATSAPP
+        sync: false
+      - key: PYTHONUNBUFFERED
+        value: "1"
