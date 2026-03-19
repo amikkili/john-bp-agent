@@ -25,7 +25,7 @@ jobs:
 
       - name: Check syntax — all Python files
         run: |
-          python -m py_compile app/main.py
+          python -m py_compile main.py
           python -m py_compile app/agent.py
           python -m py_compile app/database.py
           python -m py_compile app/alerts.py
