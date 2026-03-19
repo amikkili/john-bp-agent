@@ -7,6 +7,7 @@ on:
 
 jobs:
   test:
+    name: Validate Code
     runs-on: ubuntu-latest
 
     steps:
@@ -55,8 +56,16 @@ jobs:
           grep -r "gsk_" app/ --include="*.py" && echo "FAIL: Groq key found" && exit 1 || echo "PASS: No Groq key"
           echo "PASS: Security check complete"
           
-      - name: Deploy to Render
+  
+    deploy:
+      name: Deploy to Render
+      runs-on: ubuntu-latest
+      needs: test
+      
+      steps:
+      - name: Trigger Render Deployment
         if: github.ref == 'refs/heads/master'
         run: |
           curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
           echo "Render deployment triggered!"
+        
