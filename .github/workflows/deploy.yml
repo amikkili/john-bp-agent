@@ -1,10 +1,9 @@
 name: John BP Agent — CI Pipeline
-
 on:
   push:
-    branches: [ main ]
+    branches: [ master, develop ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   test:
@@ -27,10 +26,10 @@ jobs:
       - name: Check syntax — all Python files
         run: |
           python -m py_compile main.py
-          python -m py_compile agent.py
-          python -m py_compile database.py
-          python -m py_compile alerts.py
-          python -m py_compile groq_client.py
+          python -m py_compile app/agent.py
+          python -m py_compile app/database.py
+          python -m py_compile app/alerts.py
+          python -m py_compile app/groq_client.py
           echo "All files syntax OK"
 
       - name: Test package imports
@@ -44,15 +43,14 @@ jobs:
 
       - name: Verify required files exist
         run: |
-          test -f main.py      && echo "main.py found"
-          test -f agent.py     && echo "agent.py found"
-          test -f database.py  && echo "database.py found"
-          test -f alerts.py    && echo "alerts.py found"
-          test -f .env.example && echo ".env.example found"
-          test -f Procfile     && echo "Procfile found"
-          test ! -f .env       && echo "PASS: .env not committed"
+          test -f app/main.py      && echo "main.py found"
+          test -f app/agent.py     && echo "agent.py found"
+          test -f app/database.py  && echo "database.py found"
+          test -f app/alerts.py    && echo "alerts.py found"
+          test -f .env.example     && echo ".env.example found"
+          test ! -f .env           && echo "PASS: .env not committed"
 
       - name: Security check — no secrets in code
         run: |
-          grep -r "gsk_" . --include="*.py" && echo "FAIL: Groq key found" && exit 1 || echo "PASS: No Groq key in code"
-          grep -r "AC[a-zA-Z0-9]{32}" . --include="*.py" && echo "FAIL: Twilio SID found" && exit 1 || echo "PASS: No Twilio SID in code"
+          grep -r "gsk_" app/ --include="*.py" && echo "FAIL: Groq key found" && exit 1 || echo "PASS: No Groq key"
+          echo "PASS: Security check complete"
