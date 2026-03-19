@@ -54,3 +54,9 @@ jobs:
         run: |
           grep -r "gsk_" app/ --include="*.py" && echo "FAIL: Groq key found" && exit 1 || echo "PASS: No Groq key"
           echo "PASS: Security check complete"
+          
+      - name: Deploy to Render
+        if: github.ref == 'refs/heads/master'
+        run: |
+          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+          echo "Render deployment triggered!"
